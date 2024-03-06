@@ -2,7 +2,7 @@ package util
 
 // Constants for all supported currencies
 const (
-	USD = "USED"
+	USD = "USD"
 	EUR = "EUR"
 	CAD = "CAD"
 )
