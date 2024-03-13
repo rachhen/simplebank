@@ -126,8 +126,10 @@ func (server *Server) updateAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.UpdateAccountParams{
 		ID:      reqUri.ID,
+		Owner:   authPayload.Username,
 		Balance: req.Balance,
 	}
 
@@ -156,7 +158,13 @@ func (server *Server) deleteAccount(ctx *gin.Context) {
 		return
 	}
 
-	err := server.store.DeleteAccount(ctx, req.ID)
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	arg := db.DeleteAccountParams{
+		ID:    req.ID,
+		Owner: authPayload.Username,
+	}
+
+	err := server.store.DeleteAccount(ctx, arg)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
